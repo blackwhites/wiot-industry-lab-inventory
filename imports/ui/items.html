@@ -1,7 +1,7 @@
 <template name="items">
   <table>
     <thead>
-      <tr><th>GUID</th><th>Description</th></tr>
+      <tr><th>GUID</th><th>Description</th><th>Actions</th></tr>
     </thead>
     <tbody>
         {{> pages}}
@@ -13,6 +13,18 @@
 <template name="item">
     <tr>
         <td>{{guid}}</td>
-        <td>{{description}}</td>
+        {{#if isEditing}}
+            <td><input type="text" value="{{description}}" class="item-inline-edit edit-description" /></td>
+            <td>
+                <button class="save">Save</button>
+                <button class="cancel">Cancel</button>
+            </td>
+        {{else}}
+            <td>{{description}}</td>
+            <td>
+                <button class="delete">Delete</button>
+                <button class="edit">Edit</button>
+            </td>
+        {{/if}}
     </tr>
 </template>

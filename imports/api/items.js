@@ -1,6 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 
-export const Items = new Meteor.Pagination("items", {
+export const Items = new Mongo.Collection('items');
+
+export const Pages = new Meteor.Pagination(Items, {
     itemTemplate: 'item',
     divWrapper: false
 });
