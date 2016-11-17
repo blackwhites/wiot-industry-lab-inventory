@@ -19,6 +19,14 @@ Template.item.events({
     'click .cancel'(event, template) {
         template.state.set('isEditing', false);
     },
+    'click .save'(event, template) {
+        updateItem(this, template);
+    },
+    'keypress .item-inline-edit'(event, template) {
+        if (event.which === 13) {
+            updateItem(this, template);
+        }
+    },
 });
 
 Template.item.helpers({
@@ -26,3 +34,11 @@ Template.item.helpers({
         return Template.instance().state.get('isEditing');
     },
 });
+
+function updateItem(item, template) {
+    const description = template.find('.edit-description').value;
+    Items.update(item._id, {
+        $set: { description: description },
+    });
+    template.state.set('isEditing', false);
+}
