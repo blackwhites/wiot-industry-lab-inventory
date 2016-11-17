@@ -37,8 +37,12 @@ Template.item.helpers({
 
 function updateItem(item, template) {
     const description = template.find('.edit-description').value;
+    const status = template.find('.edit-status').value;
     Items.update(item._id, {
-        $set: { description: description },
+        $set: {
+            description: description,
+            status: status
+        },
     });
     template.state.set('isEditing', false);
 }

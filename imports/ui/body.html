@@ -1,13 +1,21 @@
 <body>
   <div class="container">
-    <header>
+    <div class="page-header">
       <h1>Industry Lab Inventory</h1>
-    </header>
+    </div>
     
-    <form class="new-item">
-        Add Item: <input type="text" name="description" placeholder="Description" />
-    </form>
+    <div class="panel panel-default">
+        <div class="panel-heading">Item List</div>
+        <div class="panel-body">
+            <form class="form-inline new-item">
+                <div class="form-group">
+                    <label>Add Item: </label>
+                    <input type="text" name="description" placeholder="Description" />
+                </div>
+            </form>
+        </div>
     
-    {{> items}}
+        {{> items}}
+    </div>
   </div>
 </body>

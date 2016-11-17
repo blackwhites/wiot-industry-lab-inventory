@@ -1,29 +1,58 @@
 <template name="items">
-  <table>
-    <thead>
-      <tr><th>GUID</th><th>Description</th><th>Actions</th></tr>
-    </thead>
-    <tbody>
-        {{> pages}}
-    </tbody>
-  </table>
-  {{> pagesNav}}
+      <table class="table table-condensed">
+        <thead>
+          <tr>
+              <th>GUID</th>
+              <th>Description</th>
+              <th>Status/Owner/Location</th>
+              <th class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+            {{> pages}}
+        </tbody>
+      </table>
+    <div class="panel-footer">
+        {{> pagesNav}}
+    </div>
 </template>
 
 <template name="item">
     <tr>
         <td>{{guid}}</td>
         {{#if isEditing}}
-            <td><input type="text" value="{{description}}" class="item-inline-edit edit-description" /></td>
             <td>
-                <button class="save">Save</button>
-                <button class="cancel">Cancel</button>
+                <div class="form-inline">
+                    <input type="text" value="{{description}}" class="form-control input-sm item-inline-edit edit-description" />
+                </div>
+            </td>
+            <td>
+                <div class="form-inline">
+                    <input type="text" value="{{status}}" class="form-control input-sm item-inline-edit edit-status" />
+                </div>
+            </td>
+            <td class="text-right">
+                <div class="btn-group btn-group-xs">
+                    <button class="btn btn-default save">
+                        <span class="glyphicon glyphicon-ok"></span>
+                    </button>
+                    <button class="btn btn-default cancel">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </div>
             </td>
         {{else}}
             <td>{{description}}</td>
-            <td>
-                <button class="delete">Delete</button>
-                <button class="edit">Edit</button>
+            <td>{{status}}</td>
+            <td class="text-right">
+                <div class="btn-group btn-group-xs">
+                    <button class="btn btn-default delete">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                    <button class="btn btn-default edit">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                    </button>
+                </div>
             </td>
         {{/if}}
     </tr>
