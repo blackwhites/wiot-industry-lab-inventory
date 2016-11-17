@@ -13,4 +13,16 @@ Template.item.events({
     'click .delete'() {
         Items.remove(this._id);
     },
+    'click .edit'(event, template) {
+        template.state.set('isEditing', true);
+    },
+    'click .cancel'(event, template) {
+        template.state.set('isEditing', false);
+    },
+});
+
+Template.item.helpers({
+    isEditing() {
+        return Template.instance().state.get('isEditing');
+    },
 });
