@@ -23,9 +23,9 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
-	"encoding/json"
+	//"encoding/json"
 	//"time"
-	"strings"
+	//"strings"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
@@ -101,11 +101,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	// Handle different functions
 	if function == "init" {													//initialize the chaincode state, used as reset
 		return t.Init(stub, "init", args)
-	} else if function == "delete" {										//deletes an entity from its state
-		res, err := t.Delete(stub, args)
-		cleanTrades(stub)													//lets make sure all open trades are still valid
-		return res, err
-	} else if function == "write" {											//writes a value to the chaincode state
+	}  else if function == "write" {											//writes a value to the chaincode state
 		return t.Write(stub, args)
 	} 
 	fmt.Println("invoke did not find func: " + function)					//error
@@ -116,17 +112,17 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 // ============================================================================================================================
 // Query - Our entry point for Queries
 // ============================================================================================================================
-// func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-// 	fmt.Println("query is running " + function)
+func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+	fmt.Println("query is running " + function)
 
-// 	// Handle different functions
-// 	if function == "read" {													//read a variable
-// 		return t.read(stub, args)
-// 	}
-// 	fmt.Println("query did not find func: " + function)						//error
+	// Handle different functions
+	if function == "read" {													//read a variable
+		//return t.read(stub, args)
+	}
+	fmt.Println("query did not find func: " + function)						//error
 
-// 	return nil, errors.New("Received unknown function query")
-// }
+	return nil, errors.New("Received unknown function query")
+}
 
 // // ============================================================================================================================
 // // Read - read a variable from chaincode state
@@ -192,7 +188,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 // Write - write variable into chaincode state
 // ============================================================================================================================
 func (t *SimpleChaincode) Write(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	var name, value string // Entities
+	var guid, description string // Entities
 	var err error
 	fmt.Println("running write()")
 
