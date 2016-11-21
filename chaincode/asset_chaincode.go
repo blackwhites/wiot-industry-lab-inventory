@@ -70,7 +70,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 
 	// Write the state to the ledger
 	err = stub.PutState("abc", []byte(strconv.Itoa(Aval)))				//making a test var "abc", I find it handy to read/write to it right away to test the network
-	console.log('------------put abc------------');
+	fmt.Println("---------------just put abc-----------------")
 	if err != nil {
 		return nil, err
 	}
