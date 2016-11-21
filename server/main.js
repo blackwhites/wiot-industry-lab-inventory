@@ -59,8 +59,8 @@ var options = 	{
 								}
 					},
 					chaincode:{
-						//zip_url: 'https://github.com/ibm-blockchain/marbles/archive/v2.0.zip',
-						//unzip_dir: 'marbles-2.0/chaincode',													//subdirectroy name of chaincode after unzipped
+						zip_url: 'https://github.com/mgzeitouni/wiot-industry-lab-inventory/archive/master.zip',
+						unzip_dir: 'wiot-industry-lab-inventory-master/chaincode',													//subdirectroy name of chaincode after unzipped
 						git_url: 'http://gopkg.in/mgzeitouni/wiot-industry-lab-inventory.v0/chaincode',						//GO get http url
 					
 						//hashed cc name from prev deployment, comment me out to always deploy, uncomment me when its already deployed to skip deploying again
@@ -78,8 +78,8 @@ ibc.load(options, function (err, cc){														//parse/load chaincode, respo
 	else{
 		console.log('here');
 		chaincode = cc;
-		part1.setup(ibc, cc);																//pass the cc obj to part 1 node code
-		part2.setup(ibc, cc);																//pass the cc obj to part 2 node code
+		//part1.setup(ibc, cc);																//pass the cc obj to part 1 node code
+		//part2.setup(ibc, cc);																//pass the cc obj to part 2 node code
 
 		// ---- To Deploy or Not to Deploy ---- //
 		if(!cc.details.deployed_name || cc.details.deployed_name === ''){					//yes, go deploy
@@ -91,6 +91,8 @@ ibc.load(options, function (err, cc){														//parse/load chaincode, respo
 			console.log('chaincode summary file indicates chaincode has been previously deployed');
 			check_if_deployed(null, 1);
 		}
+
+		export cc;
 	}
 });
 
@@ -136,114 +138,8 @@ function check_if_deployed(e, attempt){
 	}
 }
 
+
 // ============================================================================================================================
-// 												WebSocket Communication Madness
+// 												Chaincode Interactions
 // ============================================================================================================================
-function cb_deployed(e){
-	if(e != null){
-		//look at tutorial_part1.md in the trouble shooting section for help
-		console.log('! looks like a deploy error, holding off on the starting the socket\n', e);
-		if(!process.error) process.error = {type: 'deploy', msg: e.details};
-	}
-	else{
-		console.log('------------------------------------------ Websocket Up ------------------------------------------');
-		
-		wss = new ws.Server({server: server});												//start the websocket now
-		wss.on('connection', function connection(ws) {
-			ws.on('message', function incoming(message) {
-				console.log('received ws msg:', message);
-				try{
-					var data = JSON.parse(message);
-					part1.process_msg(ws, data);											//pass the websocket msg to part 1 processing
-					part2.process_msg(ws, data);											//pass the websocket msg to part 2 processing
-				}
-				catch(e){
-					console.log('ws message error', e);
-				}
-			});
-			
-			ws.on('error', function(e){console.log('ws error', e);});
-			ws.on('close', function(){console.log('ws closed');});
-		});
-		
-		wss.broadcast = function broadcast(data) {											//send to all connections
-			wss.clients.forEach(function each(client) {
-				try{
-					client.send(JSON.stringify(data));
-				}
-				catch(e){
-					console.log('error broadcast ws', e);
-				}
-			});
-		};
-		
-		// ========================================================
-		// Monitor the height of the blockchain
-		// ========================================================
-		ibc.monitor_blockheight(function(chain_stats){										//there is a new block, lets refresh everything that has a state
-			if(chain_stats && chain_stats.height){
-				console.log('hey new block, lets refresh and broadcast to all', chain_stats.height-1);
-				ibc.block_stats(chain_stats.height - 1, cb_blockstats);
-				wss.broadcast({msg: 'reset'});
-				chaincode.query.read(['_marbleindex'], cb_got_index);
-				chaincode.query.read(['_opentrades'], cb_got_trades);
-			}
-			
-			//got the block's stats, lets send the statistics
-			function cb_blockstats(e, stats){
-				if(e != null) console.log('blockstats error:', e);
-				else {
-					chain_stats.height = chain_stats.height - 1;							//its 1 higher than actual height
-					stats.height = chain_stats.height;										//copy
-					wss.broadcast({msg: 'chainstats', e: e, chainstats: chain_stats, blockstats: stats});
-				}
-			}
-			
-			//got the marble index, lets get each marble
-			function cb_got_index(e, index){
-				if(e != null) console.log('marble index error:', e);
-				else{
-					try{
-						var json = JSON.parse(index);
-						for(var i in json){
-							console.log('!', i, json[i]);
-							chaincode.query.read([json[i]], cb_got_marble);					//iter over each, read their values
-						}
-					}
-					catch(e){
-						console.log('marbles index msg error:', e);
-					}
-				}
-			}
-			
-			//call back for getting a marble, lets send a message
-			function cb_got_marble(e, marble){
-				if(e != null) console.log('marble error:', e);
-				else {
-					try{
-						wss.broadcast({msg: 'marbles', marble: JSON.parse(marble)});
-					}
-					catch(e){
-						console.log('marble msg error', e);
-					}
-				}
-			}
-			
-			//call back for getting open trades, lets send the trades
-			function cb_got_trades(e, trades){
-				if(e != null) console.log('trade error:', e);
-				else {
-					try{
-						trades = JSON.parse(trades);
-						if(trades && trades.open_trades){
-							wss.broadcast({msg: 'open_trades', open_trades: trades.open_trades});
-						}
-					}
-					catch(e){
-						console.log('trade msg error', e);
-					}
-				}
-			}
-		});
-	}
-}
+
