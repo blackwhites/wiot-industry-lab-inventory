@@ -1,8 +1,9 @@
 
-var chaincode_functions = require('chaincode_functions');
+import {cc} from '../../server/main';
+var chaincode_functions = require('../../server/chaincode_functions');
 var Ibc1 = require('ibm-blockchain-js');                                                        //rest based SDK for ibm blockchain
 var ibc = new Ibc1();
-import cc from '../../server/main';
+
 
 
 import { Template } from 'meteor/templating';
