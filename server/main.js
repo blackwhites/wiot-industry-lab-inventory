@@ -78,7 +78,7 @@ ibc.load(options, function (err, cc){														//parse/load chaincode, respo
 	else{
 		console.log('here');
 		chaincode = cc;
-		cc.deploy('init', ['99'], {delay_ms: 30000});
+		cc.deploy('init', ['99']);
 		//part1.setup(ibc, cc);																//pass the cc obj to part 1 node code
 		//part2.setup(ibc, cc);																//pass the cc obj to part 2 node code
 
