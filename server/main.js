@@ -93,9 +93,12 @@ ibc.load(options, function (err, cc){														//parse/load chaincode, respo
 		// 	check_if_deployed(null, 1);
 		// }
 
-		// exports.cc = cc;
+		module.exports.cc = cc;
+
+		
 	}
 });
+
 
 
 // //loop here, check if chaincode is up and running or not
